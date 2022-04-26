@@ -1,9 +1,10 @@
 import React, { useEffect } from "react"
 import styled from "styled-components"
-import { useStaticQuery, graphql } from "gatsby"
+import { useStaticQuery, graphql, Link } from "gatsby"
 import Img from "gatsby-image"
 import { Button } from "./Button"
 import { ImLocation } from "react-icons/im"
+import parse from "html-react-parser"
 import Aos from "aos"
 import "aos/dist/aos.css"
 import { GlobalStyle } from "./styles/GlobalStyles"
@@ -15,29 +16,28 @@ const Trips = ({ heading }) => {
 
   const data = useStaticQuery(graphql`
     query TripsQuery {
-      allTripsJson {
-        edges {
-          node {
-            alt
-            button
-            name
-            img {
-              childImageSharp {
-                fluid {
-                  ...GatsbyImageSharpFluid
-                }
-              }
-            }
-          }
-        }
+      allWpPost(
+      sort: { fields: [date], order: DESC }
+      limit: 100
+      skip: 0
+    ) {
+      nodes {
+        excerpt
+        uri
+        date(formatString: "MMMM DD, YYYY")
+        title
+        excerpt,
+        slug
       }
+    }
     }
   `)
 
   function getTrips(data) {
     const tripsArray = []
-    data.allTripsJson.edges.forEach((item, index) => {
+    data.allWpPost.nodes.forEach((item, index) => {
       tripsArray.push(
+
         <ProductCard
           key={index}
           data-aos="fade-down"
@@ -45,16 +45,34 @@ const Trips = ({ heading }) => {
           data-aos-duration="1000"
         >
           <ProductImg
-            alt={item.node.alt}
-            fluid={item.node.img.childImageSharp.fluid}
+            alt={item.excerpt}
+            
           />
           <ProductInfo>
             <TextWrap>
-              <ImLocation />
-              <ProductTitle>{item.node.name}</ProductTitle>
+             
+              <ProductTitle>{item.title}</ProductTitle>
             </TextWrap>
+            
+             
+          </ProductInfo>
+          
+          <ProductDescription>
+            <TextWrap>
+              <ImLocation />
+              <ProductTitle>{item.excerpt}</ProductTitle>
+            </TextWrap>
+            
+            <Link to={item.slug} itemProp="url">
+              <span itemProp="headline">{parse(item.title)}</span>
+            </Link>
+          </ProductDescription>
+
+          <ProductDescription>
+             
+            
             <Button
-              to="/trips"
+              to= "{item.slug}"
               primary="true"
               round="true"
               css={`
@@ -63,9 +81,9 @@ const Trips = ({ heading }) => {
                 font-size: 14px;
               `}
             >
-              {item.node.button}
+              {item.date}
             </Button>
-          </ProductInfo>
+          </ProductDescription>
         </ProductCard>
       )
     })
@@ -120,6 +138,7 @@ const ProductCard = styled.div`
   position: relative;
   border-radius: 10px;
   transition: 0.2s ease;
+  color:black;
 `
 const ProductImg = styled(Img)`
   height: 100%;
@@ -139,17 +158,27 @@ const ProductInfo = styled.div`
   flex-direction: column;
   align-items: flex-start;
   padding: 0 2rem;
-
+  color:black;
   @media screen and (max-width: 280px) {
     padding: 0 1rem;
   }
 `
-
+const ProductDescription = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 2rem;
+  color:black;
+  @media screen and (max-width: 280px) {
+    padding: 0 1rem;
+  }
+`
 const TextWrap = styled.div`
   display: flex;
   align-items: center;
   position: absolute;
-  top: 375px;
+  top: 125px;
+  color:black;
 `
 
 const ProductTitle = styled.div`
