@@ -6,6 +6,7 @@ import { Button } from "./Button"
 import { ImLocation } from "react-icons/im"
 import Aos from "aos"
 import "aos/dist/aos.css"
+import { GlobalStyle } from "./styles/GlobalStyles"
 
 const Trips = ({ heading }) => {
   useEffect(() => {
@@ -71,11 +72,13 @@ const Trips = ({ heading }) => {
     return tripsArray
   }
 
-  return (
+  return (   
+    <div className="global-wrapper">
     <ProductsContainer>
       <ProductsHeading>{heading}</ProductsHeading>
       <ProductWrapper>{getTrips(data)}</ProductWrapper>
     </ProductsContainer>
+    </div>
   )
 }
 
