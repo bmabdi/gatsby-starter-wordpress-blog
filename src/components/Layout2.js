@@ -4,7 +4,7 @@ import Footer from "./Footer"
 import Header from "./Header"
 import { GlobalStyle } from "./styles/GlobalStyles"
 
-const Layout = ({ children }) => {
+const Layout2 = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const toggle = () => {
@@ -24,4 +24,4 @@ const Layout = ({ children }) => {
   )
 }
 
-export default Layout
+export default Layout2
